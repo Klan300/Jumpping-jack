@@ -1,7 +1,7 @@
 import arcade
 
 SCREEN_WIDTH = 500
-SCREEN_HEIGHT = 700
+SCREEN_HEIGHT = 800
 
 
 class JumpWINDOW(arcade.Window):
@@ -14,7 +14,7 @@ class JumpWINDOW(arcade.Window):
     def on_draw(self):
         arcade.start_render()
         arcade.draw_texture_rectangle(
-        SCREEN_WIDTH//2, SCREEN_HEIGHT//2, SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
+        SCREEN_WIDTH//2, SCREEN_HEIGHT//2, SCREEN_WIDTH+50, SCREEN_HEIGHT, self.background)
 
 
 
