@@ -1,8 +1,6 @@
 class World:
     def __init__(self,width,height):
-        Start_platform = Platform(self,width//2,height//2)
-
-
+        self.start_platform = Platform(self,250,15)
 
 
 
