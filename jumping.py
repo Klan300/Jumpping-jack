@@ -11,6 +11,7 @@ class JumpWINDOW(arcade.Window):
         self.background = arcade.load_texture("images/background.jpg")
         self.world = World(width,height)
         self.platform = ModelSprite('images/platform1.png',model=self.world.base_platform)
+        self.character = ModelSprite('images/character.png',model=self.world.character)
 
 
         arcade.set_background_color(arcade.color.WHITE)
@@ -20,6 +21,7 @@ class JumpWINDOW(arcade.Window):
         arcade.draw_texture_rectangle(
         SCREEN_WIDTH//2, SCREEN_HEIGHT//2, SCREEN_WIDTH+50, SCREEN_HEIGHT, self.background)
         self.platform.draw()
+        self.character.draw()
     
 
 
