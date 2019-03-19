@@ -2,6 +2,7 @@ base_platform_height = 24
 base_platform_width = 71
 center_character_x = 28
 center_character_y = 25
+Gravity = -1
 
 
 class World:
