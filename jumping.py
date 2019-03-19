@@ -2,7 +2,7 @@ import arcade
 from models import World
 
 SCREEN_WIDTH = 500
-SCREEN_HEIGHT = 800
+SCREEN_HEIGHT = 750
 
 
 class JumpWINDOW(arcade.Window):
@@ -10,7 +10,7 @@ class JumpWINDOW(arcade.Window):
         super().__init__(width, height)
         self.background = arcade.load_texture("images/background.jpg")
         self.world = World(width,height)
-        self.platform = ModelSprite('images/platform.png',model=self.world.start_platform)
+        self.platform = ModelSprite('images/platform1.png',model=self.world.base_platform)
 
 
         arcade.set_background_color(arcade.color.WHITE)
