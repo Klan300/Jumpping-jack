@@ -1,6 +1,6 @@
 base_platform_height = 24
 base_platform_width = 71
-center_character_x = 28
+center_character_x = 25 + 3
 center_character_y = 25
 Gravity = -1
 
@@ -25,7 +25,11 @@ class Character:
         self.world = world
         self.x = x
         self.y = y
-        self.Stop = True
+
+        self.touch_platform = True
+
+
+
     
 
 
