@@ -5,6 +5,7 @@ base_platform_height = 24
 base_platform_width = 71
 center_character_x = 25 + 3
 center_character_y = 25
+Gap_platform = 35
 Gravity = -1
 
 
@@ -26,7 +27,7 @@ class Platform_list:
 
     def create_start_platform(self):
         count = 0
-        for y in range(48,750,35):
+        for y in range(48,750,Gap_platform):
             x = randint(0,500)
             if count > 0:
                 if self.platform_now[count-1].x + 300 >= x <= self.platform_now[count-1].x - 300:
