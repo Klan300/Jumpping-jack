@@ -25,8 +25,12 @@ class Platform_list:
 
 
     def create_start_platform(self):
-        for y in range(48,750,50):
+        count = 0
+        for y in range(48,750,35):
             x = randint(0,500)
+            if count > 0:
+                if self.platform_now[count-1].x + 300 >= x <= self.platform_now[count-1].x - 300:
+                    x = randint(0, 500)
             self.platform_now.append(Platform(self.world,x,y))
 
         return self.platform_now
