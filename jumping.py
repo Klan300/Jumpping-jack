@@ -10,9 +10,9 @@ class JumpWINDOW(arcade.Window):
         super().__init__(width, height)
         self.background = arcade.load_texture("images/background.jpg")
         self.world = World(width,height)
-        self.platform = ModelSprite('images/platform1.png',model=self.world.base_platform)
+        self.base_platform = ModelSprite('images/platform1.png',model=self.world.base_platform)
         self.character = ModelSprite('images/character.png',model=self.world.character)
-
+        self.platform_list = Platform_drawer(self.world.platform_list.create_start_platform())
 
         arcade.set_background_color(arcade.color.WHITE)
     
@@ -20,10 +20,12 @@ class JumpWINDOW(arcade.Window):
         arcade.start_render()
         arcade.draw_texture_rectangle(
         SCREEN_WIDTH//2, SCREEN_HEIGHT//2, SCREEN_WIDTH+50, SCREEN_HEIGHT, self.background)
-        self.platform.draw()
+        self.base_platform.draw()
+        self.platform_list.draw()
         self.character.draw()
-    
+        
 
+        
 
 class ModelSprite(arcade.Sprite):
     def __init__(self, *args, **kwargs):
@@ -39,7 +41,22 @@ class ModelSprite(arcade.Sprite):
         self.sync_with_model()
         super().draw()
 
+class Platform_drawer:
+    def __init__(self,platform_list):
+        self.platform_list = platform_list
+        self.platform_sprite = arcade.Sprite('images/platform1.png')
 
+    def draw_sprite(self,sprite,x,y):
+        sprite.set_position(x,y)
+        sprite.draw()
+
+
+    def draw(self):
+        for platform in self.platform_list:
+            self.draw_sprite(self.platform_sprite,platform.x,platform.y)
+            
+            
+        
 
 
 def main():
