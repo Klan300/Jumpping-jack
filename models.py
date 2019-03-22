@@ -5,7 +5,7 @@ base_platform_height = 24
 base_platform_width = 71
 center_character_x = 25 + 3
 center_character_y = 25
-Gap_platform = 35
+Gap_platform_i = 35
 Gravity = -1
 
 
