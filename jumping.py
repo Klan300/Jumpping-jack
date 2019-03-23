@@ -41,6 +41,9 @@ class ModelSprite(arcade.Sprite):
         self.sync_with_model()
         super().draw()
 
+    def on_key_press(self, key, key_modifiers):
+        self.world.on_key_press(key, key_modifiers)
+
 class Platform_drawer:
     def __init__(self,platform_list):
         self.platform_list = platform_list

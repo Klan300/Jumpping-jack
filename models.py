@@ -1,4 +1,5 @@
 from random import randint
+import arcade.key
 
 
 base_platform_height = 24
@@ -7,7 +8,18 @@ center_character_x = 25 + 3
 center_character_y = 25
 Gap_platform  = 35
 Gravity = -1
+MOVEMENT_SPEED = 4
 
+DIR_STILL = 0
+DIR_RIGHT = 1
+DIR_LEFT = 2
+
+DIR_OFFSETS = {DIR_STILL: (0, 0),
+               DIR_RIGHT: (1, 0),
+               DIR_LEFT: (-1, 0)}
+
+KEY_MAP = {arcade.key.LEFT: DIR_LEFT,
+           arcade.key.RIGHT: DIR_RIGHT}
 
 class World:
     def __init__(self,width,height):
@@ -16,7 +28,9 @@ class World:
         self.character = Character(self,width//2-3,base_platform_height+center_character_y)
         self.platform_list = Platform_list(self)
 
-
+    def on_key_press(self, key, key_modifiers):
+        if key in KEY_MAP:
+            self.pacman.next_direction = KEY_MAP[key]
 
     
 class Platform_list:
@@ -51,6 +65,11 @@ class Character:
         self.y = y
 
         self.touch_platform = True
+
+    def move(self, direction):
+        self.x += MOVEMENT_SPEED * DIR_OFFSETS[direction][0]
+        self.y += MOVEMENT_SPEED * DIR_OFFSETS[direction][1]
+    
 
 
 
