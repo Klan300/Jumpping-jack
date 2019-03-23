@@ -33,6 +33,7 @@ class Platform_list:
                 if self.platform_now[count-1].x + 300 >= x <= self.platform_now[count-1].x - 300:
                     x = randint(0, 500)
             self.platform_now.append(Platform(self.world,x,y))
+            count += 1
 
         return self.platform_now
 
