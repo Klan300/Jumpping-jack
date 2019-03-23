@@ -35,7 +35,7 @@ class World:
 
     def on_key_press(self, key, key_modifiers):
         if key in KEY_MAP:
-            self.pacman.next_direction = KEY_MAP[key]
+            self.character.direction = KEY_MAP[key]
 
     
 
@@ -72,7 +72,7 @@ class Character:
         self.y = y
         self.direction = DIR_STILL    
         self.touch_platform = True
-        
+
 
     def update(self, delta):
         self.move(self.direction)
