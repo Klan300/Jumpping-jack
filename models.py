@@ -28,9 +28,16 @@ class World:
         self.character = Character(self,width//2-3,base_platform_height+center_character_y)
         self.platform_list = Platform_list(self)
 
+
+    def update(self,delta):
+        self.character.update(delta)
+
+
     def on_key_press(self, key, key_modifiers):
         if key in KEY_MAP:
             self.pacman.next_direction = KEY_MAP[key]
+
+    
 
     
 class Platform_list:
@@ -63,8 +70,12 @@ class Character:
         self.world = world
         self.x = x
         self.y = y
-
+        self.direction = DIR_STILL    
         self.touch_platform = True
+        
+
+    def update(self, delta):
+        self.move(self.direction)
 
     def move(self, direction):
         self.x += MOVEMENT_SPEED * DIR_OFFSETS[direction][0]

@@ -23,7 +23,12 @@ class JumpWINDOW(arcade.Window):
         self.base_platform.draw()
         self.platform_list.draw()
         self.character.draw()
+
+    def update(self, delta):
+        self.world.update(delta)
         
+    def on_key_press(self, key, key_modifiers):
+        self.world.on_key_press(key, key_modifiers)
 
         
 
@@ -37,12 +42,11 @@ class ModelSprite(arcade.Sprite):
         if self.model:
             self.set_position(self.model.x, self.model.y)
 
+
     def draw(self):
         self.sync_with_model()
         super().draw()
 
-    def on_key_press(self, key, key_modifiers):
-        self.world.on_key_press(key, key_modifiers)
 
 class Platform_drawer:
     def __init__(self,platform_list):
