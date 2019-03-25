@@ -8,7 +8,7 @@ center_character_x = 25 + 3
 center_character_y = 25
 Gap_platform  = 35
 Gravity = -1
-MOVEMENT_SPEED = 4
+MOVEMENT_SPEED = 2
 
 DIR_STILL = 0
 DIR_RIGHT = 1
@@ -36,6 +36,7 @@ class World:
     def on_key_press(self, key, key_modifiers):
         if key in KEY_MAP:
             self.character.direction = KEY_MAP[key]
+        
 
     
 
