@@ -5,7 +5,7 @@ import arcade.key
 base_platform_height = 24
 base_platform_width = 71
 center_character_x = 25 + 3
-center_character_y = 25
+center_character_y = 24
 Gap_platform  = 35
 Gravity = -1
 MOVEMENT_SPEED = 2
@@ -37,6 +37,9 @@ class World:
         if key in KEY_MAP:
             self.character.direction = KEY_MAP[key]
         
+    def on_key_relese(self, key, key_modifiers):
+        if key in KEY_MAP:
+            self.character.direction = DIR_STILL
 
     
 
