@@ -2,12 +2,12 @@ from random import randint
 import arcade.key
 
 
-base_platform_height = 24
-base_platform_width = 71
+platform_center_y = 12
+platform_center_x = 35.5
 center_character_x = 25 + 3
 center_character_y = 24
 Gap_platform  = 35
-Gravity = -1
+GRAVITY = -1
 MOVEMENT_SPEED = 2
 
 DIR_STILL = 0
@@ -24,8 +24,8 @@ KEY_MAP = {arcade.key.LEFT: DIR_LEFT,
 class World:
     def __init__(self,width,height):
 
-        self.base_platform = Platform(self,width//2,base_platform_height//2)
-        self.character = Character(self,width//2-3,base_platform_height+center_character_y)
+        self.base_platform = Platform(self,width//2,platform_center_y)
+        self.character = Character(self,width//2-3,platform_center_y+center_character_y)
         self.platform_list = Platform_list(self)
 
 
@@ -67,9 +67,18 @@ class Platform:
         self.world = world
         self.x = x
         self.y = y
+
+    def touch_player(self,character):
+        if character.platform_checker:
+            Gravity = 0
+            character.y += 15
+            Gravity = -1
+            
     
 
 class Character:
+    GRAVITY = -1
+
     def __init__(self, world,x,y):
         self.world = world
         self.x = x
@@ -80,11 +89,22 @@ class Character:
 
     def update(self, delta):
         self.move(self.direction)
+    
 
     def move(self, direction):
         self.x += MOVEMENT_SPEED * DIR_OFFSETS[direction][0]
         self.y += MOVEMENT_SPEED * DIR_OFFSETS[direction][1]
+        self.y -= Character.GRAVITY
     
+
+    def platform_checker(self,platform_list):
+        for platform in platform_list:
+            if platform.y + platform_center_y == self.y - center_character_y:
+                if platform.x - platform_center_x <= self.x + center_character_x <= platform.x + platform_center_x or platform.x - platform_center_x <= self.x - center_character_x <= platform.x + platform_center_x:
+                    return True
+
+
+
 
 
 
