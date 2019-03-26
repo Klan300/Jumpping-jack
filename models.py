@@ -1,6 +1,6 @@
 from random import randint
 import arcade.key
-
+from coldetect import chack_player_platform_collsion
 
 platform_center_y = 12
 platform_center_x = 35.5
@@ -32,6 +32,11 @@ class World:
     def update(self,delta):
         self.character.update(delta)
 
+        if self.platform_list.platform_checker(self.character):
+            self.character.y += 15
+        else:
+            self.character.y -= self.character.GRAVITY
+
 
     def on_key_press(self, key, key_modifiers):
         if key in KEY_MAP:
@@ -41,7 +46,7 @@ class World:
         if key in KEY_MAP:
             self.character.direction = DIR_STILL
 
-    
+
 
     
 class Platform_list:
@@ -62,46 +67,49 @@ class Platform_list:
 
         return self.platform_now
 
+    def platform_checker(self,character):
+        for platform in self.platform_now :
+            if chack_player_platform_collsion(character.x, character.y, platform.x, platform.y) == True:
+                return True
+        else:
+            return False
+
+
 class Platform:
     def __init__(self,world,x,y):
         self.world = world
         self.x = x
         self.y = y
 
-    def touch_player(self,character):
-        if character.platform_checker:
-            Gravity = 0
-            character.y += 15
-            Gravity = -1
-            
+   
     
 
 class Character:
-    GRAVITY = -1
+    GRAVITY = -4
 
     def __init__(self, world,x,y):
         self.world = world
         self.x = x
         self.y = y
         self.direction = DIR_STILL    
-        self.touch_platform = True
 
 
     def update(self, delta):
         self.move(self.direction)
-    
+
 
     def move(self, direction):
         self.x += MOVEMENT_SPEED * DIR_OFFSETS[direction][0]
         self.y += MOVEMENT_SPEED * DIR_OFFSETS[direction][1]
-        self.y -= Character.GRAVITY
-    
 
-    def platform_checker(self,platform_list):
-        for platform in platform_list:
-            if platform.y + platform_center_y == self.y - center_character_y:
-                if platform.x - platform_center_x <= self.x + center_character_x <= platform.x + platform_center_x or platform.x - platform_center_x <= self.x - center_character_x <= platform.x + platform_center_x:
-                    return True
+
+    def character_touch_platform(character , platform_list):
+        if character.platform_checker(platform_list):
+            character.y += 15
+        else:
+            character.y -= Character.GRAVITY
+
+                    
 
 
 
