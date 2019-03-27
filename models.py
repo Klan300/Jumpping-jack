@@ -1,6 +1,5 @@
 from random import randint
-import arcade.key
-import arcade.physics_engines
+import arcade
 from coldetect import check_player_platform_collsion
 
 platform_center_y = 12
@@ -9,7 +8,6 @@ center_character_x = 25 + 3
 center_character_y = 24
 Gap_platform  = 35
 
-GRAVITY = 5
 MOVEMENT_SPEED = 5
 DIR_STILL = 0
 DIR_RIGHT = 1
@@ -19,7 +17,7 @@ DIR_UP = 3
 DIR_OFFSETS = {DIR_STILL: (0, 0),
                DIR_RIGHT: (1, 0),
                DIR_LEFT: (-1, 0),
-               DIR_UP: (0,2)}
+               DIR_UP: (0,4)}
 
 KEY_MAP = {arcade.key.LEFT: DIR_LEFT,
            arcade.key.RIGHT: DIR_RIGHT,
@@ -27,6 +25,7 @@ KEY_MAP = {arcade.key.LEFT: DIR_LEFT,
 
 class World:
     COUNT_UP = 0
+    GRAVITY = 4
 
     def __init__(self,width,height):
 
@@ -35,27 +34,30 @@ class World:
         self.platform_list = Platform_list(self)
 
     def update(self,delta):
-        if check_player_platform_collsion(self.character.x,self.character.y,self.base_platform.x,self.base_platform.y):
-            GRAVITY = 0
-        
-        elif self.platform_list.platform_checker(self.character) == True:
-            GRAVITY = 0
-        else:
-            GRAVITY = 1
-            self.character.y -= GRAVITY
-
         self.character.update(delta)
+
+        if check_player_platform_collsion(self.character.x, self.character.y, self.base_platform.x, self.base_platform.y):
+            self.GRAVITY = 0
+        elif self.platform_list.platform_checker(self.character):
+            self.GRAVITY = 0
+        else:
+            self.character.y -= self.GRAVITY
+            self.GRAVITY = 4
+
         
 
     def on_key_press(self, key, key_modifiers):
         if key in KEY_MAP:
             if key == arcade.key.SPACE :
-                self.COUNT_UP += 1
-                if self.COUNT_UP <= 3:
+                if self.COUNT_UP <= 2:
                     self.character.direction = KEY_MAP[key]
+                    self.COUNT_UP += 1
+                else:
+                    if check_player_platform_collsion(self.character.x, self.character.y, self.base_platform.x, self.base_platform.y) or self.platform_list.platform_checker(self.character):
+                        self.COUNT_UP -= 2
             else:
-                self.character.direction = KEY_MAP[key]
-                COUNT = 0        
+                self.character.direction = KEY_MAP[key]       
+
 
     def on_key_relese(self, key, key_modifiers):
         if key in KEY_MAP:
