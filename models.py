@@ -1,12 +1,16 @@
 from random import randint
 import arcade
-from coldetect import check_player_platform_collsion
+from coldetect import check_player_platform_collsion , check_time
+
 
 platform_center_y = 12
 platform_center_x = 35.5
 center_character_x = 25 + 3
 center_character_y = 24
-Gap_platform  = 35
+Gap_platform  = 30
+
+
+
 
 MOVEMENT_SPEED = 5
 DIR_STILL = 0
@@ -17,7 +21,7 @@ DIR_UP = 3
 DIR_OFFSETS = {DIR_STILL: (0, 0),
                DIR_RIGHT: (1, 0),
                DIR_LEFT: (-1, 0),
-               DIR_UP: (0,4)}
+               DIR_UP: (0,2)}
 
 KEY_MAP = {arcade.key.LEFT: DIR_LEFT,
            arcade.key.RIGHT: DIR_RIGHT,
@@ -54,6 +58,7 @@ class World:
                     self.COUNT_UP += 1
                 else:
                     if check_player_platform_collsion(self.character.x, self.character.y, self.base_platform.x, self.base_platform.y) or self.platform_list.platform_checker(self.character):
+                        
                         self.COUNT_UP -= 2
             else:
                 self.character.direction = KEY_MAP[key]       
