@@ -10,7 +10,6 @@ class JumpWINDOW(arcade.Window):
         super().__init__(width, height)
         self.background = arcade.load_texture("images/background.jpg")
         self.world = World(width,height)
-        self.base_platform = ModelSprite('images/platform1.png',model=self.world.base_platform)
         self.character = ModelSprite('images/character.png',model=self.world.character)
         self.platform_list = Platform_drawer(self.world.platform_list.create_start_platform())
 
@@ -20,7 +19,6 @@ class JumpWINDOW(arcade.Window):
         arcade.start_render()
         arcade.draw_texture_rectangle(
         SCREEN_WIDTH//2, SCREEN_HEIGHT//2, SCREEN_WIDTH+50, SCREEN_HEIGHT, self.background)
-        self.base_platform.draw()
         self.platform_list.draw()
         self.character.draw()
 
@@ -28,6 +26,7 @@ class JumpWINDOW(arcade.Window):
         self.world.update(delta)
         
     def on_key_press(self, key, key_modifiers):
+        
         self.world.on_key_press(key, key_modifiers)
 
     def on_key_release(self, key, key_modifiers):

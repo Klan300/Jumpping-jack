@@ -2,13 +2,13 @@ from random import randint
 import arcade
 from coldetect import check_player_platform_collsion , check_time
 
-
 platform_center_y = 12
 platform_center_x = 35.5
 center_character_x = 25 + 3
 center_character_y = 24
 Gap_platform  = 30
-
+SCREEN_WIDTH = 500
+SCREEN_HEIGHT = 750
 
 
 
@@ -29,26 +29,21 @@ KEY_MAP = {arcade.key.LEFT: DIR_LEFT,
 
 class World:
     COUNT_UP = 0
-    GRAVITY = 4
+    GRAVITY = 2
 
     def __init__(self,width,height):
 
-        self.base_platform = Platform(self,width//2,platform_center_y)
         self.character = Character(self,width//2-3,platform_center_y*2+center_character_y)
         self.platform_list = Platform_list(self)
 
     def update(self,delta):
-        self.character.update(delta)
-
-        if check_player_platform_collsion(self.character.x, self.character.y, self.base_platform.x, self.base_platform.y):
+        if self.platform_list.platform_checker(self.character):
             self.GRAVITY = 0
-        elif self.platform_list.platform_checker(self.character):
-            self.GRAVITY = 0
+            self.platform_list.move_platform(self.character)
         else:
             self.character.y -= self.GRAVITY
-            self.GRAVITY = 4
-
-        
+            self.GRAVITY = 2
+        self.character.update(delta)
 
     def on_key_press(self, key, key_modifiers):
         if key in KEY_MAP:
@@ -57,8 +52,7 @@ class World:
                     self.character.direction = KEY_MAP[key]
                     self.COUNT_UP += 1
                 else:
-                    if check_player_platform_collsion(self.character.x, self.character.y, self.base_platform.x, self.base_platform.y) or self.platform_list.platform_checker(self.character):
-                        
+                    if self.platform_list.platform_checker(self.character):
                         self.COUNT_UP -= 2
             else:
                 self.character.direction = KEY_MAP[key]       
@@ -68,27 +62,26 @@ class World:
         if key in KEY_MAP:
             self.character.direction = DIR_STILL
 
-    
-
 
     
 class Platform_list:
     def __init__(self,world):
         self.world = world
-        self.platform_now = []
-
+        self.base_platform = Platform(self, SCREEN_WIDTH//2, platform_center_y)
+        self.platform_now = [self.base_platform]
 
     def create_start_platform(self):
         count = 0
         for y in range(48,750,Gap_platform):
             x = randint(0,500)
             if count > 0:
-                if self.platform_now[count-1].x + 300 >= x <= self.platform_now[count-1].x - 300:
+                while self.platform_now[count-1].x + 300 >= x <= self.platform_now[count-1].x - 300:
                     x = randint(0, 500)
             self.platform_now.append(Platform(self.world,x,y))
             count += 1
 
         return self.platform_now
+
 
     def platform_checker(self,character):
         for platform in self.platform_now :
@@ -97,6 +90,23 @@ class Platform_list:
         else:
             return False
 
+    def plate_form_creater(self):
+        x = randint(0, 500)
+        y = 500
+        self.platform_now.append(Platform(self.world, x, y))
+
+
+    def move_platform(self,character):
+        if character.y >= SCREEN_HEIGHT/2:
+            move = character.y - SCREEN_WIDTH/2
+            for platform in self.platform_now:
+                platform.y -= move/2 
+        
+    def delete_platform(self):
+        for platform in self.platform_list:
+            pass
+        
+           
 
 class Platform:
     def __init__(self,world,x,y):
