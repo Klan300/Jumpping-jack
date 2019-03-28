@@ -22,9 +22,15 @@ def check_time(time_str):
     return end_time - time_str
 
 
+def test(dex):
+    count = 0
+    for i in range(len(dex)):
+        if dex[i-count] % 2:
+            dex.pop(i-count)
+            count += 1
+    return dex
 
 
-    
 
 
         

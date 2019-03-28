@@ -2,6 +2,7 @@ from random import randint
 import arcade
 from coldetect import check_player_platform_collsion , check_time
 
+
 platform_center_y = 12
 platform_center_x = 35.5
 center_character_x = 25 + 3
@@ -34,16 +35,19 @@ class World:
     def __init__(self,width,height):
 
         self.character = Character(self,width//2-3,platform_center_y*2+center_character_y)
-        self.platform_list = Platform_list(self)
+        self.platform_now = Platform_list(self)
 
     def update(self,delta):
-        if self.platform_list.platform_checker(self.character):
+        if self.platform_now.platform_checker(self.character):
             self.GRAVITY = 0
-            self.platform_list.move_platform(self.character)
+            self.platform_now.move_platform(self.character)
         else:
             self.character.y -= self.GRAVITY
             self.GRAVITY = 2
+
+        self.platform_manage()
         self.character.update(delta)
+    
 
     def on_key_press(self, key, key_modifiers):
         if key in KEY_MAP:
@@ -52,7 +56,7 @@ class World:
                     self.character.direction = KEY_MAP[key]
                     self.COUNT_UP += 1
                 else:
-                    if self.platform_list.platform_checker(self.character):
+                    if self.platform_now.platform_checker(self.character):
                         self.COUNT_UP -= 2
             else:
                 self.character.direction = KEY_MAP[key]       
@@ -62,6 +66,9 @@ class World:
         if key in KEY_MAP:
             self.character.direction = DIR_STILL
 
+    def platform_manage(self):
+        self.platform_now.delete_platform()
+        self.platform_now.add_platform()
 
     
 class Platform_list:
@@ -90,6 +97,7 @@ class Platform_list:
         else:
             return False
 
+
     def plate_form_creater(self):
         x = randint(0, 500)
         y = 500
@@ -102,11 +110,29 @@ class Platform_list:
             for platform in self.platform_now:
                 platform.y -= move/2 
         
+
     def delete_platform(self):
-        for platform in self.platform_list:
-            pass
+        # count = 0
+        return filter(lambda x: x.y <= 0 , self.platform_now)
+        # for i in range(len(self.platform_now)):
+        #     if self.platform_now[i-count].y <= 0:
+        #         self.platform_now.pop(i-count)
+        #         count += 1
         
-           
+
+    def add_platform(self):
+        count = 0
+        if self.platform_now[-1].y >= 30:
+            for y in range(int((self.platform_now[-1].y + 30)//1),SCREEN_HEIGHT,Gap_platform):
+                x = randint(0, 500)
+                if count > 0:
+                    while self.platform_now[count-1].x + 300 >= x <= self.platform_now[count-1].x - 300:
+                        x = randint(0, 500)
+                self.platform_now.append(Platform(self.world, x, y))
+                count += 1
+
+
+
 
 class Platform:
     def __init__(self,world,x,y):
