@@ -30,7 +30,7 @@ KEY_MAP = {arcade.key.LEFT: DIR_LEFT,
 
 class World:
     COUNT_UP = 0
-    GRAVITY = 2
+    GRAVITY = 3
 
     def __init__(self,width,height):
 
