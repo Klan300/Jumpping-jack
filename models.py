@@ -22,7 +22,7 @@ DIR_UP = 3
 DIR_OFFSETS = {DIR_STILL: (0, 0),
                DIR_RIGHT: (1, 0),
                DIR_LEFT: (-1, 0),
-               DIR_UP: (0,2)}
+               DIR_UP: (0,5.5)}
 
 KEY_MAP = {arcade.key.LEFT: DIR_LEFT,
            arcade.key.RIGHT: DIR_RIGHT,
@@ -30,7 +30,7 @@ KEY_MAP = {arcade.key.LEFT: DIR_LEFT,
 
 class World:
     COUNT_UP = 0
-    GRAVITY = 3
+    GRAVITY = 6
 
     def __init__(self,width,height):
 
@@ -43,7 +43,8 @@ class World:
             self.platform_now.move_platform(self.character)
         else:
             self.character.y -= self.GRAVITY
-            self.GRAVITY = 2
+            self.GRAVITY = 6
+            self.platform_now.move_platform(self.character)
 
         self.platform_manage()
         self.character.update(delta)
@@ -108,16 +109,15 @@ class Platform_list:
         if character.y >= SCREEN_HEIGHT/2:
             move = character.y - SCREEN_WIDTH/2
             for platform in self.platform_now:
-                platform.y -= move/2 
+                platform.y -= move/35  
         
 
     def delete_platform(self):
-        # count = 0
-        return filter(lambda x: x.y <= 0 , self.platform_now)
-        # for i in range(len(self.platform_now)):
-        #     if self.platform_now[i-count].y <= 0:
-        #         self.platform_now.pop(i-count)
-        #         count += 1
+        count = 0
+        for i in range(len(self.platform_now)):
+            if self.platform_now[i-count].y <= 0:
+                self.platform_now.pop(i-count)
+                count += 1
         
 
     def add_platform(self):
