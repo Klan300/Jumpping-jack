@@ -17,6 +17,9 @@ class JumpWINDOW(arcade.Window):
         self.view_left = 0
         arcade.set_background_color(arcade.color.WHITE)
     
+    def setup(self):
+        
+
     def on_draw(self):
         arcade.start_render()
         arcade.draw_texture_rectangle(
