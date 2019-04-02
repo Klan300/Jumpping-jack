@@ -12,20 +12,20 @@ class JumpWINDOW(arcade.Window):
         self.background = arcade.load_texture("images/background.jpg")
         self.world = World(width,height)
         self.character = ModelSprite('images/character.png',model=self.world.character)
-        self.platform_list = Platform_drawer(self.world.platform_now.create_start_platform())
-        self.view_bottom = 375
-        self.view_left = 0
-        arcade.set_background_color(arcade.color.WHITE)
-    
-    def setup(self):
+        self.player = arcade.AnimatedWalkingSprite()
         
+        self.platform_list = Platform_drawer(self.world.platform_now.create_start_platform())
+        arcade.set_background_color(arcade.color.WHITE)
+
+
+
 
     def on_draw(self):
         arcade.start_render()
         arcade.draw_texture_rectangle(
         SCREEN_WIDTH//2, SCREEN_HEIGHT//2, SCREEN_WIDTH+50, SCREEN_HEIGHT, self.background)
         self.platform_list.draw()
-        self.character.draw()
+        self.player.draw()
 
     def update(self, delta):
     
@@ -50,7 +50,6 @@ class ModelSprite(arcade.Sprite):
     def sync_with_model(self):
         if self.model:
             self.set_position(self.model.x, self.model.y)
-
 
     def draw(self):
         self.sync_with_model()
