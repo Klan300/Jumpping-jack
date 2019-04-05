@@ -11,9 +11,7 @@ class JumpWINDOW(arcade.Window):
         super().__init__(width, height)
         self.background = arcade.load_texture("images/background.jpg")
         self.world = World(width,height)
-        self.character = ModelSprite('images/character.png',model=self.world.character)
-        self.player = arcade.AnimatedWalkingSprite()
-        
+        self.player = ModelSprite('images/character.png',model=self.world.character)
         self.platform_list = Platform_drawer(self.world.platform_now.create_start_platform())
         arcade.set_background_color(arcade.color.WHITE)
 
