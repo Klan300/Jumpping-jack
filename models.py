@@ -22,7 +22,7 @@ DIR_UP = 3
 DIR_OFFSETS = {DIR_STILL: (0, 0),
                DIR_RIGHT: (1, 0),
                DIR_LEFT: (-1, 0),
-               DIR_UP: (0,5.5)}
+               DIR_UP: (0,4)}
 
 KEY_MAP = {arcade.key.LEFT: DIR_LEFT,
            arcade.key.RIGHT: DIR_RIGHT,
@@ -30,7 +30,7 @@ KEY_MAP = {arcade.key.LEFT: DIR_LEFT,
 
 class World:
     COUNT_UP = 0
-    GRAVITY = 6
+    GRAVITY = 5
 
     def __init__(self,width,height):
 
@@ -43,9 +43,9 @@ class World:
             self.platform_now.move_platform(self.character)
         else:
             self.character.y -= self.GRAVITY
-            self.GRAVITY = 6
+            self.GRAVITY = 5
             self.platform_now.move_platform(self.character)
-
+        self.out_from_screen()
         self.platform_manage()
         self.character.update(delta)
     
@@ -61,6 +61,17 @@ class World:
                         self.COUNT_UP -= 2
             else:
                 self.character.direction = KEY_MAP[key]       
+
+
+    def out_from_screen(self):
+        if self.character.x >= SCREEN_WIDTH:
+            self.character.x = 0 
+        elif self.character.x <= 0:
+            self.character.x = SCREEN_WIDTH
+        
+        
+    def game_end(self):
+        pass
 
 
     def on_key_relese(self, key, key_modifiers):
