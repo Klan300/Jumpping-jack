@@ -1,6 +1,8 @@
 from random import randint
 import arcade
 from coldetect import check_player_platform_collsion , check_time
+import time
+import sys
 
 
 platform_center_y = 12
@@ -48,6 +50,8 @@ class World:
         self.out_from_screen()
         self.platform_manage()
         self.character.update(delta)
+        if self.character.y-23 <= 0:
+            self.game_end()
     
 
     def on_key_press(self, key, key_modifiers):
@@ -71,7 +75,15 @@ class World:
         
         
     def game_end(self):
-        pass
+        start = time.time()
+        self.character.direction = DIR_STILL
+        while True:
+            end = time.time()
+            if end - start >= 3:
+                sys.exit()
+                break
+        
+
 
 
     def on_key_relese(self, key, key_modifiers):
