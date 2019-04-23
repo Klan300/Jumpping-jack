@@ -12,19 +12,20 @@ Gap_platform = 30
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 750
 MOVEMENT_SPEED = 5
+GRAVITY = 0.5
 
 DIR_STILL = 0
 DIR_RIGHT = 1
 DIR_LEFT = 2
 DIR_UP = 3
 
+COUNT_UP = 0
 DIR_OFFSETS = {DIR_STILL: (0, 0),
                DIR_RIGHT: (1, 0),
                DIR_LEFT: (-1, 0)}
 
 KEY_MAP = {arcade.key.LEFT: DIR_LEFT,
-           arcade.key.RIGHT: DIR_RIGHT,
-           arcade.key.SPACE: DIR_UP}
+           arcade.key.RIGHT: DIR_RIGHT}
 
 
 class World:
@@ -43,29 +44,17 @@ class World:
 
     def update(self, delta):
         if self.platform_now.platform_checker(self.character):
-            self.character.GRAVITY = 0
-            self.character.vy = 0
-            self.platform_now.move_platform(self.character)
-        else:
-            self.character.GRAVITY = 0.3
-            self.platform_now.move_platform(self.character)
+            self.character.jump()
+
         self.character.update(delta)
+        self.platform_now.move_platform(self.character)
         self.platform_manage()
 
 
 
     def on_key_press(self, key, key_modifiers): 
         if key in KEY_MAP:
-            if key == arcade.key.SPACE:
-                if self.COUNT_UP <= 2:
-                    self.character.jump()
-                    self.COUNT_UP += 1
-                else:
-                    if self.platform_now.platform_checker(self.character):
-                        self.character.jump()
-                        self.COUNT_UP = 0
-            else:
-                self.character.direction = KEY_MAP[key]
+            self.character.direction = KEY_MAP[key]
 
 
     def game_end(self):
@@ -105,12 +94,13 @@ class World:
 class Player:
     STATE_FROZEN = 1
     STATE_STARTED = 2
-    GRAVITY = 0.3
     STARTING_VELOCITY = 0
-    JUMPING_VELOCITY = 20
+    JUMPING_VELOCITY = 12
+    count = 0
 
     def __init__(self, world, x, y):
         self.world = world
+        self.gravity = GRAVITY
         self.x = x
         self.y = y
         self.vy = Player.STARTING_VELOCITY
@@ -118,7 +108,7 @@ class Player:
 
     def update(self, delta):
         self.y += self.vy
-        self.vy -= Player.GRAVITY
+        self.vy -= self.gravity
         self.move(self.direction)
         self.out_from_screen()
 
