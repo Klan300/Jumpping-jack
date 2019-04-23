@@ -1,21 +1,18 @@
 from random import randint
 import arcade
-from coldetect import check_player_platform_collsion , check_time
+from coldetect import check_player_platform_collsion, check_time
 import time
 import sys
-
 
 platform_center_y = 12
 platform_center_x = 35.5
 center_character_x = 25 + 3
 center_character_y = 24
-Gap_platform  = 30
+Gap_platform = 30
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 750
-
-
-
 MOVEMENT_SPEED = 5
+
 DIR_STILL = 0
 DIR_RIGHT = 1
 DIR_LEFT = 2
@@ -23,58 +20,54 @@ DIR_UP = 3
 
 DIR_OFFSETS = {DIR_STILL: (0, 0),
                DIR_RIGHT: (1, 0),
-               DIR_LEFT: (-1, 0),
-               DIR_UP: (0,4)}
+               DIR_LEFT: (-1, 0)}
 
 KEY_MAP = {arcade.key.LEFT: DIR_LEFT,
            arcade.key.RIGHT: DIR_RIGHT,
            arcade.key.SPACE: DIR_UP}
 
+
 class World:
+    
     COUNT_UP = 0
-    GRAVITY = 5
+    STATE_FROZEN = 1
+    STATE_STARTED = 2
+    STATE_DEAD = 3
 
-    def __init__(self,width,height):
-        self.width = width
-        self.height = height
-        self.character = Character(self,width//2-3,platform_center_y*2+center_character_y)
+    def __init__(self, width, height):
+
+        self.character = Player(
+            self, width//2, height//2-200)
         self.platform_now = Platform_list(self)
+        self.state = World.STATE_STARTED
 
-    def update(self,delta):
+    def update(self, delta):
         if self.platform_now.platform_checker(self.character):
-            self.GRAVITY = 0
+            self.character.GRAVITY = 0
+            self.character.vy = 0
             self.platform_now.move_platform(self.character)
         else:
-            self.character.y -= self.GRAVITY
-            self.GRAVITY = 5
+            self.character.GRAVITY = 0.3
             self.platform_now.move_platform(self.character)
-        self.out_from_screen()
-        self.platform_manage()
         self.character.update(delta)
-        if self.character.y-23 <= 0:
-            self.game_end()
-    
+        self.platform_manage()
 
-    def on_key_press(self, key, key_modifiers):
+
+
+    def on_key_press(self, key, key_modifiers): 
         if key in KEY_MAP:
-            if key == arcade.key.SPACE :
+            if key == arcade.key.SPACE:
                 if self.COUNT_UP <= 2:
-                    self.character.direction = KEY_MAP[key]
+                    self.character.jump()
                     self.COUNT_UP += 1
                 else:
                     if self.platform_now.platform_checker(self.character):
-                        self.COUNT_UP -= 2
+                        self.character.jump()
+                        self.COUNT_UP = 0
             else:
-                self.character.direction = KEY_MAP[key]       
+                self.character.direction = KEY_MAP[key]
 
 
-    def out_from_screen(self):
-        if self.character.x >= SCREEN_WIDTH:
-            self.character.x = 0 
-        elif self.character.x <= 0:
-            self.character.x = SCREEN_WIDTH
-        
-        
     def game_end(self):
         start = time.time()
         self.character.direction = DIR_STILL
@@ -83,9 +76,6 @@ class World:
             if end - start >= 3:
                 sys.exit()
                 break
-        
-
-
 
     def on_key_relese(self, key, key_modifiers):
         if key in KEY_MAP:
@@ -95,7 +85,57 @@ class World:
         self.platform_now.delete_platform()
         self.platform_now.add_platform()
 
-    
+
+    def start(self):
+        self.state = World.STATE_STARTED
+
+    def freeze(self):
+        self.state = World.STATE_FROZEN
+
+    def is_started(self):
+        return self.state == World.STATE_STARTED
+
+    def die(self):
+        self.state = World.STATE_DEAD
+
+    def is_dead(self):
+        return self.state == World.STATE_DEAD
+
+
+class Player:
+    STATE_FROZEN = 1
+    STATE_STARTED = 2
+    GRAVITY = 0.3
+    STARTING_VELOCITY = 0
+    JUMPING_VELOCITY = 20
+
+    def __init__(self, world, x, y):
+        self.world = world
+        self.x = x
+        self.y = y
+        self.vy = Player.STARTING_VELOCITY
+        self.direction = DIR_STILL
+
+    def update(self, delta):
+        self.y += self.vy
+        self.vy -= Player.GRAVITY
+        self.move(self.direction)
+        self.out_from_screen()
+
+    def out_from_screen(self):
+        if self.x >= SCREEN_WIDTH:
+            self.x = 0
+        elif self.x <= 0:
+            self.x = SCREEN_WIDTH
+
+
+    def jump(self):
+        self.vy = Player.JUMPING_VELOCITY
+
+    def move(self, direction):
+        self.x += MOVEMENT_SPEED * DIR_OFFSETS[direction][0]
+        self.y += MOVEMENT_SPEED * DIR_OFFSETS[direction][1]
+
 class Platform_list:
     def __init__(self,world):
         self.world = world
@@ -163,44 +203,3 @@ class Platform:
         self.world = world
         self.x = x
         self.y = y
-
-   
-    
-
-class Character:
-
-    def __init__(self, world,x,y):
-        self.world = world
-        self.x = x
-        self.y = y
-        self.direction = DIR_STILL    
-
-
-    def update(self, delta):
-        self.move(self.direction)
-
-
-    def move(self, direction):
-        self.x += MOVEMENT_SPEED * DIR_OFFSETS[direction][0]
-        self.y += MOVEMENT_SPEED * DIR_OFFSETS[direction][1]
-
-
-
-                    
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
-        
-
-        

@@ -1,5 +1,5 @@
 import arcade
-from models import World
+from newmodels import World
 
 
 SCREEN_WIDTH = 500
@@ -26,14 +26,16 @@ class JumpWINDOW(arcade.Window):
         self.player.draw()
 
     def update(self, delta):
-    
         self.world.update(delta)
         
 
 
     def on_key_press(self, key, key_modifiers):
-        
+        if not self.world.is_started():
+            self.world.start()
+
         self.world.on_key_press(key, key_modifiers)
+
 
     def on_key_release(self, key, key_modifiers):
         self.world.on_key_relese(key, key_modifiers)
