@@ -12,7 +12,7 @@ Gap_platform = 40
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 750
 MOVEMENT_SPEED = 5
-GRAVITY = 0.8
+GRAVITY = 0.5
 
 DIR_STILL = 0
 DIR_RIGHT = 1
@@ -96,7 +96,7 @@ class Player:
     STATE_FROZEN = 1
     STATE_STARTED = 2
     STARTING_VELOCITY = 0
-    JUMPING_VELOCITY = 20
+    JUMPING_VELOCITY = 15
     count = 0
 
     def __init__(self, world, x, y):
