@@ -8,11 +8,11 @@ platform_center_y = 12
 platform_center_x = 35.5
 center_character_x = 25 + 3
 center_character_y = 24
-Gap_platform = 30
+Gap_platform = 40
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 750
 MOVEMENT_SPEED = 5
-GRAVITY = 0.5
+GRAVITY = 0.8
 
 DIR_STILL = 0
 DIR_RIGHT = 1
@@ -43,12 +43,13 @@ class World:
         self.state = World.STATE_STARTED
 
     def update(self, delta):
-        if self.platform_now.platform_checker(self.character):
-            self.character.jump()
-
-        self.character.update(delta)
+        if self.character.vy <= 0:
+            if self.platform_now.platform_checker(self.character):
+                self.character.jump()
         self.platform_now.move_platform(self.character)
         self.platform_manage()
+        self.character.update(delta)
+        
 
 
 
@@ -95,7 +96,7 @@ class Player:
     STATE_FROZEN = 1
     STATE_STARTED = 2
     STARTING_VELOCITY = 0
-    JUMPING_VELOCITY = 12
+    JUMPING_VELOCITY = 20
     count = 0
 
     def __init__(self, world, x, y):
@@ -141,13 +142,13 @@ class Platform_list:
                     x = randint(0, 500)
             self.platform_now.append(Platform(self.world,x,y))
             count += 1
-
         return self.platform_now
 
 
     def platform_checker(self,character):
         for platform in self.platform_now :
             if check_player_platform_collsion(character.x, character.y, platform.x, platform.y) == True:
+                print(platform.x,platform.y)
                 return True
         else:
             return False
