@@ -10,7 +10,7 @@ center_character_x = 25 + 3
 center_character_y = 24
 Gap_platform = 40
 SCREEN_WIDTH = 500
-SCREEN_HEIGHT = 750
+SCREEN_HEIGHT = 800
 MOVEMENT_SPEED = 5
 GRAVITY = 0.5
 
@@ -38,7 +38,7 @@ class World:
     def __init__(self, width, height):
 
         self.character = Player(
-            self, width//2, height//2-200)
+            self, width//2, height//2-300)
         self.platform_now = Platform_list(self)
         self.state = World.STATE_STARTED
 
@@ -48,9 +48,11 @@ class World:
                 self.character.jump()
         self.platform_now.move_platform(self.character)
         self.platform_manage()
-        self.character.update(delta)
         
+        if self.character.y <= 0:
+            self.die
 
+        self.character.update(delta)
 
 
     def on_key_press(self, key, key_modifiers): 
@@ -58,14 +60,6 @@ class World:
             self.character.direction = KEY_MAP[key]
 
 
-    def game_end(self):
-        start = time.time()
-        self.character.direction = DIR_STILL
-        while True:
-            end = time.time()
-            if end - start >= 3:
-                sys.exit()
-                break
 
     def on_key_relese(self, key, key_modifiers):
         if key in KEY_MAP:
@@ -96,8 +90,7 @@ class Player:
     STATE_FROZEN = 1
     STATE_STARTED = 2
     STARTING_VELOCITY = 0
-    JUMPING_VELOCITY = 15
-    count = 0
+    JUMPING_VELOCITY = 12
 
     def __init__(self, world, x, y):
         self.world = world
@@ -135,7 +128,7 @@ class Platform_list:
 
     def create_start_platform(self):
         count = 0
-        for y in range(48,750,Gap_platform):
+        for y in range(48,800,Gap_platform):
             x = randint(0,500)
             if count > 0:
                 while self.platform_now[count-1].x + 300 >= x <= self.platform_now[count-1].x - 300:
@@ -164,7 +157,7 @@ class Platform_list:
         if character.y >= SCREEN_HEIGHT/2:
             move = character.y - SCREEN_WIDTH/2
             for platform in self.platform_now:
-                platform.y -= move/35  
+                platform.y -= move/30  
         
 
     def delete_platform(self):
