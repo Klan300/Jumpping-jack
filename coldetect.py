@@ -11,7 +11,7 @@ def check_player_platform_collsion(player_x,player_y,platform_x,platform_y):
     False
 
     """
-    if platform_x - 36 <= player_x + 3 <= platform_x + 36 and (platform_y + 7 < player_y - 24 < platform_y + 16 ):
+    if platform_x - 36 <= player_x + 3 <= platform_x + 36 and (platform_y + 7 < player_y - 24÷ < platform_y + 16 ):
         return True
     else:
         return False

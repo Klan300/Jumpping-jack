@@ -29,11 +29,11 @@ KEY_MAP = {arcade.key.LEFT: DIR_LEFT,
 
 
 class World:
-    
     COUNT_UP = 0
     STATE_FROZEN = 1
     STATE_STARTED = 2
     STATE_DEAD = 3
+
 
     def __init__(self, width, height):
 
@@ -41,19 +41,29 @@ class World:
             self, width//2, height//2-300)
         self.platform_now = Platform_list(self)
         self.state = World.STATE_STARTED
+        self.score = 0
+        self.score_past = 0
 
     def update(self, delta):
+        if self.state in [World.STATE_FROZEN, World.STATE_DEAD]:
+            return
+
         if self.character.vy <= 0:
             if self.platform_now.platform_checker(self.character):
                 self.character.jump()
-        self.platform_now.move_platform(self.character)
+    
+        move = self.platform_now.move_platform(self.character)
         self.platform_manage()
-        
-        if self.character.y <= 0:
-            self.die
-
+        self.score += move
         self.character.update(delta)
 
+        
+
+
+        if self.character.y-23 <= 0:
+            self.character.vy = 0 
+
+        
 
     def on_key_press(self, key, key_modifiers): 
         if key in KEY_MAP:
@@ -68,6 +78,7 @@ class World:
     def platform_manage(self):
         self.platform_now.delete_platform()
         self.platform_now.add_platform()
+
 
 
     def start(self):
@@ -97,14 +108,18 @@ class Player:
         self.gravity = GRAVITY
         self.x = x
         self.y = y
+        self.py = 0
         self.vy = Player.STARTING_VELOCITY
         self.direction = DIR_STILL
+        self.score = 0
 
     def update(self, delta):
+        self.py = self.y
         self.y += self.vy
         self.vy -= self.gravity
         self.move(self.direction)
         self.out_from_screen()
+
 
     def out_from_screen(self):
         if self.x >= SCREEN_WIDTH:
@@ -137,7 +152,7 @@ class Platform_list:
             count += 1
         return self.platform_now
 
-
+ 
     def platform_checker(self,character):
         for platform in self.platform_now :
             if check_player_platform_collsion(character.x, character.y, platform.x, platform.y) == True:
@@ -157,7 +172,10 @@ class Platform_list:
         if character.y >= SCREEN_HEIGHT/2:
             move = character.y - SCREEN_WIDTH/2
             for platform in self.platform_now:
-                platform.y -= move/30  
+                platform.y -= move/30 
+            return move//30
+        else:
+            return 0
         
 
     def delete_platform(self):

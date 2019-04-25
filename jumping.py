@@ -24,6 +24,11 @@ class JumpWINDOW(arcade.Window):
         SCREEN_WIDTH//2, SCREEN_HEIGHT//2, SCREEN_WIDTH+50, SCREEN_HEIGHT, self.background)
         self.platform_list.draw()
         self.player.draw()
+        score = f"{self.world.score}"
+        
+        arcade.draw_text(score, 100, 200,
+                         arcade.color.BLACK, font_size=14)
+
 
     def update(self, delta):
         self.world.update(delta)
