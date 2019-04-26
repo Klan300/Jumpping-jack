@@ -8,9 +8,9 @@ platform_center_y = 12
 platform_center_x = 35.5
 center_character_x = 25 + 3
 center_character_y = 24
-Gap_platform = 40
+Gap_platform = 60
 SCREEN_WIDTH = 500
-SCREEN_HEIGHT = 800
+SCREEN_HEIGHT = 850
 MOVEMENT_SPEED = 5
 GRAVITY = 0.5
 
@@ -156,7 +156,6 @@ class Platform_list:
     def platform_checker(self,character):
         for platform in self.platform_now :
             if check_player_platform_collsion(character.x, character.y, platform.x, platform.y) == True:
-                print(platform.x,platform.y)
                 return True
         else:
             return False
@@ -172,8 +171,8 @@ class Platform_list:
         if character.y >= SCREEN_HEIGHT/2:
             move = character.y - SCREEN_WIDTH/2
             for platform in self.platform_now:
-                platform.y -= move/30 
-            return move//30
+                platform.y -= move/20 
+            return move//20
         else:
             return 0
         
@@ -188,8 +187,8 @@ class Platform_list:
 
     def add_platform(self):
         count = 0
-        if self.platform_now[-1].y >= 30:
-            for y in range(int((self.platform_now[-1].y + 30)//1),SCREEN_HEIGHT,Gap_platform):
+        if self.platform_now[-1].y >= Gap_platform:
+            for y in range(int((self.platform_now[-1].y + Gap_platform)//1),SCREEN_HEIGHT,Gap_platform):
                 x = randint(0, 500)
                 if count > 0:
                     while self.platform_now[count-1].x + 300 >= x <= self.platform_now[count-1].x - 300:
@@ -205,3 +204,25 @@ class Platform:
         self.world = world
         self.x = x
         self.y = y
+
+
+
+
+
+
+
+
+def check_player_platform_collsion(player_x, player_y, platform_x, platform_y):
+    """
+    >>> check_player_platform_collsion(60,60,90,24)
+    True
+
+    >>> check_player_platform_collsion(100,29,34,23)
+    False
+
+    """
+    if platform_x - 36 <= player_x <= platform_x + 36 and (platform_y + 9 < player_y - 23 < platform_y + 15):
+        return True
+    else:
+
+        return False
