@@ -4,6 +4,8 @@ from coldetect import check_player_platform_collsion, check_time
 import time
 import sys
 
+
+delta = 1/70
 platform_center_y = 12
 platform_center_x = 35.5
 center_character_x = 25 + 3
@@ -47,9 +49,9 @@ class World:
     def update(self, delta):
         if self.state in [World.STATE_FROZEN, World.STATE_DEAD]:
             return
-
-        if self.character.vy <= 0:
-            if self.platform_now.platform_checker(self.character):
+        
+        if self.character.vy < 0:
+            if self.platform_now.platform_checker():
                 self.character.jump()
     
         move = self.platform_now.move_platform(self.character)
@@ -153,13 +155,12 @@ class Platform_list:
         return self.platform_now
 
  
-    def platform_checker(self,character):
+    def platform_checker(self):
         for platform in self.platform_now :
-            if check_player_platform_collsion(character.x, character.y, platform.x, platform.y) == True:
+            if platform.hit(self.world.character):
                 return True
-        else:
-            return False
-
+        return False
+ 
 
     def plate_form_creater(self):
         x = randint(0, 500)
@@ -197,8 +198,6 @@ class Platform_list:
                 count += 1
 
 
-
-
 class Platform:
     def __init__(self,world,x,y):
         self.world = world
@@ -206,23 +205,17 @@ class Platform:
         self.y = y
 
 
+    def hit(self,character):
+        if (self.x - 40 <= character.x-10 <= self.x + 40) and ( self.y + 8 <= character.y - 23 <= self.y + 16):
+            return True
+        else:
+            return False
 
 
 
-
-
-
-def check_player_platform_collsion(player_x, player_y, platform_x, platform_y):
-    """
-    >>> check_player_platform_collsion(60,60,90,24)
-    True
-
-    >>> check_player_platform_collsion(100,29,34,23)
-    False
-
-    """
-    if platform_x - 36 <= player_x <= platform_x + 36 and (platform_y + 9 < player_y - 23 < platform_y + 15):
-        return True
-    else:
-
-        return False
+class Platform_can_move(Platform):
+    def __init__(self, world, x, y):
+        return super().__init__(world, x, y)
+        self.vy = 10
+        
+    def 

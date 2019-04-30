@@ -2,6 +2,8 @@ import arcade
 from newmodels import World
 
 
+
+delta = 1/70
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 750
 VIEWPORT_MARGIN = 0
@@ -77,6 +79,7 @@ class Platform_drawer:
             
             
         
+
 
 
 def main():
