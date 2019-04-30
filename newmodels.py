@@ -56,6 +56,7 @@ class World:
     
         move = self.platform_now.move_platform(self.character)
         self.platform_manage()
+        self.platform_now.update(delta)
         self.score += move
         self.character.update(delta)
 
@@ -194,8 +195,18 @@ class Platform_list:
                 if count > 0:
                     while self.platform_now[count-1].x + 300 >= x <= self.platform_now[count-1].x - 300:
                         x = randint(0, 500)
-                self.platform_now.append(Platform(self.world, x, y))
+                plat = randint(-1,1)
+                if plat <= 0:
+                    self.platform_now.append(Platform(self.world, x, y))
+                else :
+                    self.platform_now.append(Platform_can_move(self.world, x, y))
                 count += 1
+
+
+    def update(self,delta):
+        for platform in self.platform_now:
+            platform.update(delta)
+
 
 
 class Platform:
@@ -210,12 +221,27 @@ class Platform:
             return True
         else:
             return False
+    
+    def update(self,delta):
+        pass
 
 
-
-class Platform_can_move(Platform):
+class Platform_can_move():
     def __init__(self, world, x, y):
-        return super().__init__(world, x, y)
-        self.vy = 10
-        
-    def 
+        self.world = world
+        self.x = x
+        self.y = y
+        self.vx = 1
+        self.max_right = self.x + 70
+        self.max_left = self.x - 70
+
+    def hit(self, character):
+        if (self.x - 40 <= character.x-10 <= self.x + 40) and (self.y + 8 <= character.y - 23 <= self.y + 16):
+            return True
+        else:
+            return False
+
+    def update(self, delta):
+        self.x += self.vx
+        if self.x >= self.max_right or self.x <= self.max_left:
+            self.vx *= -1
