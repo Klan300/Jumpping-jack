@@ -5,19 +5,20 @@ import time
 import sys
 
 
-delta = 1/70
+
 platform_center_y = 12
 platform_center_x = 35.5
 center_character_x = 25 + 3
 center_character_y = 24
 Gap_platform = 60
 SCREEN_WIDTH = 500
-SCREEN_HEIGHT = 850
+SCREEN_HEIGHT = 900
+
 MOVEMENT_SPEED = 5
-GRAVITY = 0.5
+GRAVITY = 0.45 
 
 DIR_STILL = 0
-DIR_RIGHT = 1
+DIR_RIGHT = 1  
 DIR_LEFT = 2
 DIR_UP = 3
 
@@ -50,17 +51,16 @@ class World:
         if self.state in [World.STATE_FROZEN, World.STATE_DEAD]:
             return
         
-        if self.character.vy < 0:
-            if self.platform_now.platform_checker():
-                self.character.jump()
-    
+        if self.character.vy <= 0:
+            self.platform_now.platform_checker()
+            
+        self.character.update(delta)
         move = self.platform_now.move_platform(self.character)
         self.platform_manage()
         self.platform_now.update(delta)
         self.score += move
-        self.character.update(delta)
 
-        
+    
 
 
         if self.character.y-23 <= 0:
@@ -83,7 +83,6 @@ class World:
         self.platform_now.add_platform()
 
 
-
     def start(self):
         self.state = World.STATE_STARTED
 
@@ -104,7 +103,7 @@ class Player:
     STATE_FROZEN = 1
     STATE_STARTED = 2
     STARTING_VELOCITY = 0
-    JUMPING_VELOCITY = 12
+    JUMPING_VELOCITY = 11
 
     def __init__(self, world, x, y):
         self.world = world
@@ -112,7 +111,7 @@ class Player:
         self.x = x
         self.y = y
         self.py = 0
-        self.vy = Player.STARTING_VELOCITY
+        self.vy = self.STARTING_VELOCITY
         self.direction = DIR_STILL
         self.score = 0
 
@@ -132,11 +131,13 @@ class Player:
 
 
     def jump(self):
-        self.vy = Player.JUMPING_VELOCITY
+        self.vy = self.JUMPING_VELOCITY
 
     def move(self, direction):
         self.x += MOVEMENT_SPEED * DIR_OFFSETS[direction][0]
         self.y += MOVEMENT_SPEED * DIR_OFFSETS[direction][1]
+
+
 
 class Platform_list:
     def __init__(self,world):
@@ -147,10 +148,7 @@ class Platform_list:
     def create_start_platform(self):
         count = 0
         for y in range(48,800,Gap_platform):
-            x = randint(0,500)
-            if count > 0:
-                while self.platform_now[count-1].x + 300 >= x <= self.platform_now[count-1].x - 300:
-                    x = randint(0, 500)
+            x = randint(50,400)
             self.platform_now.append(Platform(self.world,x,y))
             count += 1
         return self.platform_now
@@ -158,13 +156,11 @@ class Platform_list:
  
     def platform_checker(self):
         for platform in self.platform_now :
-            if platform.hit(self.world.character):
-                return True
-        return False
+            platform.hit(self.world.character)
  
 
     def plate_form_creater(self):
-        x = randint(0, 500)
+        x = randint(50, 450)
         y = 500
         self.platform_now.append(Platform(self.world, x, y))
 
@@ -218,10 +214,9 @@ class Platform:
 
     def hit(self,character):
         if (self.x - 40 <= character.x-10 <= self.x + 40) and ( self.y + 8 <= character.y - 23 <= self.y + 16):
-            return True
-        else:
-            return False
-    
+            character.jump()
+
+
     def update(self,delta):
         pass
 
@@ -237,9 +232,7 @@ class Platform_can_move():
 
     def hit(self, character):
         if (self.x - 40 <= character.x-10 <= self.x + 40) and (self.y + 8 <= character.y - 23 <= self.y + 16):
-            return True
-        else:
-            return False
+            character.jump()
 
     def update(self, delta):
         self.x += self.vx
