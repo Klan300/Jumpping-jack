@@ -130,6 +130,7 @@ class Platform_drawer:
     def __init__(self,platform_list):
         self.platform_list = platform_list
         self.platform_sprite = arcade.Sprite('images/platform1.png')
+        self.platform_moving_sprite = arcade.Sprite('images/platform_move.png')
 
     def draw_sprite(self,sprite,x,y):
         sprite.set_position(x,y)
@@ -138,7 +139,10 @@ class Platform_drawer:
 
     def draw(self):
         for platform in self.platform_list:
-            self.draw_sprite(self.platform_sprite,platform.x,platform.y)
+            if platform.name == 1:
+                self.draw_sprite(self.platform_sprite,platform.x,platform.y)
+            else:
+                self.draw_sprite(self.platform_moving_sprite,platform.x,platform.y)
             
             
         

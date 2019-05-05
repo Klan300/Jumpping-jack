@@ -102,7 +102,7 @@ class World:
 
 class Player:
     STATE_FROZEN = 1
-    STATE_STARTED = 2 g
+    STATE_STARTED = 2
     STARTING_VELOCITY = 0
     JUMPING_VELOCITY = 10
 
@@ -211,6 +211,7 @@ class Platform:
         self.world = world
         self.x = x
         self.y = y
+        self.name = 1
 
 
     def hit(self,character):
@@ -230,6 +231,7 @@ class Platform_can_move():
         self.vx = 1
         self.max_right = self.x + 70
         self.max_left = self.x - 70
+        self.name = 2
 
     def hit(self, character):
         if (self.x - 35 <= character.x-10 <= self.x + 35) and (self.y + 7 <= character.y - 23 <= self.y + 16):
