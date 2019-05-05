@@ -15,7 +15,7 @@ SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 900
 
 MOVEMENT_SPEED = 5
-GRAVITY = 0.45 
+GRAVITY = 0.4 
 
 DIR_STILL = 0
 DIR_RIGHT = 1  
@@ -45,7 +45,6 @@ class World:
         self.platform_now = Platform_list(self)
         self.state = World.STATE_STARTED
         self.score = 0
-        self.score_past = 0
 
     def update(self, delta):
         if self.state in [World.STATE_FROZEN, World.STATE_DEAD]:
@@ -59,12 +58,14 @@ class World:
         self.platform_manage()
         self.platform_now.update(delta)
         self.score += move
-
+        # end = time.time()
+        # sec = end - start 
     
 
 
-        if self.character.y-23 <= 0:
+        if self.character.y < 0:
             self.character.vy = 0 
+            self.state = World.STATE_DEAD
 
         
 
@@ -101,9 +102,9 @@ class World:
 
 class Player:
     STATE_FROZEN = 1
-    STATE_STARTED = 2
+    STATE_STARTED = 2 g
     STARTING_VELOCITY = 0
-    JUMPING_VELOCITY = 11
+    JUMPING_VELOCITY = 10
 
     def __init__(self, world, x, y):
         self.world = world
@@ -213,7 +214,7 @@ class Platform:
 
 
     def hit(self,character):
-        if (self.x - 40 <= character.x-10 <= self.x + 40) and ( self.y + 8 <= character.y - 23 <= self.y + 16):
+        if (self.x - 35 <= character.x-10 <= self.x + 35) and ( self.y + 7 <= character.y - 23 <= self.y + 16):
             character.jump()
 
 
@@ -231,7 +232,7 @@ class Platform_can_move():
         self.max_left = self.x - 70
 
     def hit(self, character):
-        if (self.x - 40 <= character.x-10 <= self.x + 40) and (self.y + 8 <= character.y - 23 <= self.y + 16):
+        if (self.x - 35 <= character.x-10 <= self.x + 35) and (self.y + 7 <= character.y - 23 <= self.y + 16):
             character.jump()
 
     def update(self, delta):

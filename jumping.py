@@ -7,34 +7,41 @@ SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 750
 VIEWPORT_MARGIN = 0
 
-game = { 
-        0:"menu",
-        1:"game"}
+route = { 
+        "menu":0,
+        "game": 1,
+        "end":2}
 
 
 
 class JumpWINDOW(arcade.Window):
     def __init__(self, width, height):
         super().__init__(width, height)
+        self.current_route = route['menu']
         self.background = arcade.load_texture("images/background.jpg")
         self.setup_menu(self.width, self.height)
         self.setup_game(self.width,self.height)
-
-
+        self.end_game()
 
 
 
     def on_draw(self):
+        
         arcade.start_render()
         arcade.draw_texture_rectangle(
             SCREEN_WIDTH//2, SCREEN_HEIGHT//2, SCREEN_WIDTH+50, SCREEN_HEIGHT, self.background)
-        # self.start.draw()
-        self.platform_list.draw()
-        self.player.draw()
-        score = f"{self.world.score}"
-        
-        arcade.draw_text(score, 100, 200,
-                         arcade.color.BLACK, font_size=14)
+        if self.current_route == route["menu"]:
+            self.start.draw()
+        elif self.current_route == route["end"]:
+            self.gameover.draw()
+            self.restart.draw()
+        else:
+            self.platform_list.draw()
+            self.player.draw()
+            score = f"{self.world.score}"
+            
+            arcade.draw_text(score, 100, 200,
+                            arcade.color.BLACK, font_size=14)
 
 
 
@@ -47,8 +54,6 @@ class JumpWINDOW(arcade.Window):
             self.world.platform_now.create_start_platform())
         arcade.set_background_color(arcade.color.WHITE)
 
-        self.set_update_rate(1/50)
-
 
     def setup_menu(self, width, height):
         SCALE = 0.5
@@ -57,22 +62,49 @@ class JumpWINDOW(arcade.Window):
         self.start.append_texture(arcade.load_texture("images/start1.png",scale=SCALE))
         self.start.append_texture(arcade.load_texture("images/start2.png",scale=SCALE))
         self.start.set_texture(0)
-        self.start.texture_change_frames = 25
+        self.start.texture_change_frames = 30
 
 
+    def end_game(self):
+        SCALE = 0.25
+        self.gameover = arcade.AnimatedTimeSprite(center_x=SCREEN_WIDTH/2,center_y=SCREEN_HEIGHT-150)
+        self.gameover.append_texture(arcade.load_texture("images/gameover.png",scale=0.5))
+        self.gameover.set_texture(0)
+        self.gameover.texture_change_frames = 20
+
+        self.restart = arcade.AnimatedTimeSprite(center_x=SCREEN_WIDTH/2,center_y=SCREEN_HEIGHT/2 - 200)
+        self.restart.append_texture(arcade.load_texture("images/restart.png",scale=SCALE))
+        self.restart.append_texture(arcade.load_texture("images/restart1.png",scale=SCALE))
+        self.restart.set_texture(0)
+        self.restart.texture_change_frames = 30
 
     def update(self, delta):
-        # self.start.update()
-        # self.start.update_animation()
-        self.world.update(delta)
-        
+        if self.current_route == route["menu"]:
+            self.start.update()
+            self.start.update_animation()
+        elif self.current_route == route["game"]:
+            self.world.update(delta)
+            if self.world.is_dead():
+                self.current_route = route["end"]
+        elif self.current_route == route["end"]:
+            self.gameover.update()
+            self.start.update()
+            self.restart.update_animation()
 
 
     def on_key_press(self, key, key_modifiers):
-        if not self.world.is_started():
-            self.world.start()
+        # if not self.world.is_started():
+        #     self.world.start()
+        if self.current_route == route["menu"]:
+            if key == arcade.key.ENTER:
+                self.current_route = route["game"]
+        elif self.current_route == route["game"]:
+            self.world.on_key_press(key, key_modifiers)
+        elif self.current_route == route["end"]:
+            if key == arcade.key.ENTER:
+                self.current_route = route["game"]
+                self.setup_game(self.width,self.height)
 
-        self.world.on_key_press(key, key_modifiers)
 
 
     def on_key_release(self, key, key_modifiers):
