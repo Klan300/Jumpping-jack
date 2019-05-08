@@ -37,10 +37,14 @@ class JumpWINDOW(arcade.Window):
             self.restart.draw()
         else:
             self.platform_list.draw()
-            self.player.draw()
-            score = f"{self.world.score}"
+            if self.world.character.left == True:
+                self.player.draw()
+            else:
+                self.player_right.draw()
+                
+            score = f"score: {self.world.score}"
             
-            arcade.draw_text(score, 100, 200,
+            arcade.draw_text(score, SCREEN_WIDTH-120, SCREEN_HEIGHT-50,
                             arcade.color.BLACK, font_size=14)
 
 
@@ -49,7 +53,10 @@ class JumpWINDOW(arcade.Window):
         self.background = arcade.load_texture("images/background.jpg")
         self.world = World(width, height)
         self.player = ModelSprite(
-            'images/character.png', model=self.world.character)
+            "images/character.png", model=self.world.character)
+        self.player_right = ModelSprite(
+            "images/character_left.png", model=self.world.character)
+        
         self.platform_list = Platform_drawer(
             self.world.platform_now.create_start_platform())
         arcade.set_background_color(arcade.color.WHITE)
@@ -131,6 +138,8 @@ class Platform_drawer:
         self.platform_list = platform_list
         self.platform_sprite = arcade.Sprite('images/platform1.png')
         self.platform_moving_sprite = arcade.Sprite('images/platform_move.png')
+        self.platform_hit_sprite = arcade.Sprite('images/platform_hit.png')
+
 
     def draw_sprite(self,sprite,x,y):
         sprite.set_position(x,y)
@@ -141,8 +150,10 @@ class Platform_drawer:
         for platform in self.platform_list:
             if platform.name == 1:
                 self.draw_sprite(self.platform_sprite,platform.x,platform.y)
-            else:
+            elif platform.name == 2:
                 self.draw_sprite(self.platform_moving_sprite,platform.x,platform.y)
+            elif platform.name == 3:
+                self.draw_sprite(self.platform_hit_sprite,platform.x,platform.y)
             
             
         

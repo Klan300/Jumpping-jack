@@ -6,6 +6,7 @@ import sys
 
 
 
+
 platform_center_y = 12
 platform_center_x = 35.5
 center_character_x = 25 + 3
@@ -72,8 +73,10 @@ class World:
     def on_key_press(self, key, key_modifiers): 
         if key in KEY_MAP:
             self.character.direction = KEY_MAP[key]
-
-
+            if key == arcade.key.RIGHT:
+                self.character.left = False
+            else:
+                self.character.left = True
 
     def on_key_relese(self, key, key_modifiers):
         if key in KEY_MAP:
@@ -115,6 +118,7 @@ class Player:
         self.vy = self.STARTING_VELOCITY
         self.direction = DIR_STILL
         self.score = 0
+        self.left = True 
 
     def update(self, delta):
         self.py = self.y
@@ -192,17 +196,20 @@ class Platform_list:
                 if count > 0:
                     while self.platform_now[count-1].x + 300 >= x <= self.platform_now[count-1].x - 300:
                         x = randint(0, 500)
-                plat = randint(-1,1)
-                if plat <= 0:
+                plat = randint(0,4)
+                if plat <= 1:
                     self.platform_now.append(Platform(self.world, x, y))
-                else :
+                elif plat == 2:
                     self.platform_now.append(Platform_can_move(self.world, x, y))
+                else:
+                    self.platform_now.append(Platform_break(self.world, x, y))
                 count += 1
 
 
     def update(self,delta):
         for platform in self.platform_now:
             platform.update(delta)
+        print(len(self.platform_now))
 
 
 
@@ -212,10 +219,11 @@ class Platform:
         self.x = x
         self.y = y
         self.name = 1
+    
 
 
     def hit(self,character):
-        if (self.x - 35 <= character.x-10 <= self.x + 35) and ( self.y + 7 <= character.y - 23 <= self.y + 16):
+        if (self.x - 38 <= character.x-10 <= self.x + 38) and ( self.y + 6 <= character.y - 23 <= self.y + 17):
             character.jump()
 
 
@@ -234,10 +242,27 @@ class Platform_can_move():
         self.name = 2
 
     def hit(self, character):
-        if (self.x - 35 <= character.x-10 <= self.x + 35) and (self.y + 7 <= character.y - 23 <= self.y + 16):
+        if (self.x - 40 <= character.x-10 <= self.x + 40) and (self.y + 6 <= character.y - 23 <= self.y + 17):
             character.jump()
 
     def update(self, delta):
         self.x += self.vx
         if self.x >= self.max_right or self.x <= self.max_left:
             self.vx *= -1
+
+class Platform_break():
+    def __init__(self, world, x, y):
+        self.world = world
+        self.x = x
+        self.y = y
+        self.count_hit = 0
+        self.name = 3
+
+    def hit(self, character):
+        if (self.x - 40 <= character.x-10 <= self.x + 40) and (self.y + 6 <= character.y - 23 <= self.y + 17):
+            character.jump()
+            self.count_hit += 1
+    
+    def update(self,delta):
+        if self.count_hit >= 2:
+            self.y = -23
