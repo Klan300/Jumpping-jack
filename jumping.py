@@ -17,7 +17,7 @@ route = {
 class JumpWINDOW(arcade.Window):
     def __init__(self, width, height):
         super().__init__(width, height,SCREEN_TITLE)
-        self.all_highscore = 0
+        self.all_highscore = float(open("highscore.txt").read())
         self.current_route = route['menu']
         self.background = arcade.load_texture("images/background.jpg")
 
@@ -45,8 +45,11 @@ class JumpWINDOW(arcade.Window):
             self.button.draw()
             self.move_left.draw()
             self.move_right.draw()
+
         elif self.current_route == route["end"]:
             if self.all_highscore <= self.world.score:
+                with open("highscore.txt","w") as file:
+                    file.write(str(int(self.world.score)))
                 self.all_highscore = self.world.score
             self.gameover.draw()
             self.highscore.draw()
@@ -55,6 +58,7 @@ class JumpWINDOW(arcade.Window):
             self.score.draw()
             self.restart.draw()
             arcade.draw_texture_rectangle(center_x=SCREEN_WIDTH/2,center_y=50,width=200,height=30,texture = arcade.load_texture("images/esctoexit.png"))
+
         else:
             self.platform_list.draw()
             if self.world.character.left == True:
@@ -64,8 +68,8 @@ class JumpWINDOW(arcade.Window):
                 
             score = f"score: {self.world.score}"
             
-            arcade.draw_text(score, SCREEN_WIDTH-120, SCREEN_HEIGHT-50,
-                            arcade.color.BLACK, font_size=20)
+            arcade.draw_text(score, SCREEN_WIDTH-100, SCREEN_HEIGHT-50,
+                            arcade.color.BLACK, font_size=16)
 
 
 
