@@ -16,7 +16,7 @@ SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 900
 
 MOVEMENT_SPEED = 5
-GRAVITY = 0.4 
+GRAVITY = 0.45
 
 DIR_STILL = 0
 DIR_RIGHT = 1  
@@ -40,11 +40,11 @@ class World:
 
 
     def __init__(self, width, height):
-
         self.character = Player(
             self, width//2, height//2-300)
         self.platform_now = Platform_list(self)
         self.state = World.STATE_STARTED
+        self.highscore = 0
         self.score = 0
 
     def update(self, delta):
@@ -60,13 +60,11 @@ class World:
         self.platform_now.update(delta)
         self.score += move
         # end = time.time()
-        # sec = end - start 
-    
-
-
+        # sec = end - start
         if self.character.y < 0:
             self.character.vy = 0 
             self.state = World.STATE_DEAD
+
 
         
 
@@ -101,6 +99,9 @@ class World:
 
     def is_dead(self):
         return self.state == World.STATE_DEAD
+
+    
+
 
 
 class Player:
@@ -171,11 +172,14 @@ class Platform_list:
 
 
     def move_platform(self,character):
+        divine10 = 10
+        divine20 = 20
+
         if character.y >= SCREEN_HEIGHT/2:
             move = character.y - SCREEN_WIDTH/2
             for platform in self.platform_now:
-                platform.y -= move/20 
-            return move//20
+                platform.y -= move/15 
+            return move//15
         else:
             return 0
         
@@ -209,7 +213,6 @@ class Platform_list:
     def update(self,delta):
         for platform in self.platform_now:
             platform.update(delta)
-        print(len(self.platform_now))
 
 
 
@@ -223,7 +226,7 @@ class Platform:
 
 
     def hit(self,character):
-        if (self.x - 38 <= character.x-10 <= self.x + 38) and ( self.y + 6 <= character.y - 23 <= self.y + 17):
+        if (self.x - 40 <= character.x-10 <= self.x + 40) and ( self.y + 5 <= character.y - 23 <= self.y + 18):
             character.jump()
 
 
@@ -242,7 +245,7 @@ class Platform_can_move():
         self.name = 2
 
     def hit(self, character):
-        if (self.x - 40 <= character.x-10 <= self.x + 40) and (self.y + 6 <= character.y - 23 <= self.y + 17):
+        if (self.x - 40 <= character.x-10 <= self.x + 40) and (self.y + 5 <= character.y - 23 <= self.y + 18):
             character.jump()
 
     def update(self, delta):
@@ -259,10 +262,11 @@ class Platform_break():
         self.name = 3
 
     def hit(self, character):
-        if (self.x - 40 <= character.x-10 <= self.x + 40) and (self.y + 6 <= character.y - 23 <= self.y + 17):
+        if (self.x - 40 <= character.x-10 <= self.x + 40) and (self.y + 5 <= character.y - 23 <= self.y + 18):
             character.jump()
             self.count_hit += 1
+            if self.count_hit >= 2:
+                self.y = -23
     
     def update(self,delta):
-        if self.count_hit >= 2:
-            self.y = -23
+        pass
