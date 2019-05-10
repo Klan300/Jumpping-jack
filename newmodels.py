@@ -13,7 +13,7 @@ center_character_x = 25 + 3
 center_character_y = 24
 Gap_platform = 60
 SCREEN_WIDTH = 500
-SCREEN_HEIGHT = 900
+SCREEN_HEIGHT = 750
 
 MOVEMENT_SPEED = 5
 GRAVITY = 0.45
@@ -120,6 +120,7 @@ class Player:
         self.direction = DIR_STILL
         self.score = 0
         self.left = True 
+        count_jump = 0
 
     def update(self, delta):
         self.py = self.y
@@ -137,7 +138,12 @@ class Player:
 
 
     def jump(self):
-        self.vy = self.JUMPING_VELOCITY
+        if self.y <= 650:
+            self.vy = self.JUMPING_VELOCITY
+        else:
+            self.vy += 0
+        
+
 
     def move(self, direction):
         self.x += MOVEMENT_SPEED * DIR_OFFSETS[direction][0]
@@ -153,7 +159,7 @@ class Platform_list:
 
     def create_start_platform(self):
         count = 0
-        for y in range(48,800,Gap_platform):
+        for y in range(48,750,Gap_platform):
             x = randint(50,400)
             self.platform_now.append(Platform(self.world,x,y))
             count += 1
